@@ -43,6 +43,8 @@ export const INTRO_BOOT_SCRIPT = `(function(){
   function fallbackSkip() {
     try { sessionStorage.setItem('${SESSION_KEY}', '1'); } catch (e) {}
     d.classList.remove('intro-on');
+    // The app script never took over, so the scroll-reveal blocks must show on their own.
+    d.classList.add('js-failed');
     var page = document.getElementById('page');
     if (page) page.removeAttribute('inert');
   }
