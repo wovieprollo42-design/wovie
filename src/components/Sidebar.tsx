@@ -5,7 +5,9 @@ import { MailIcon, WhatsAppIcon } from './Icons'
 export function Sidebar() {
   return (
     <aside className="rounded-[1.25rem] border border-line bg-card p-4 sm:p-5 lg:sticky lg:top-6">
-      <div className="grid grid-cols-[6rem_1fr] items-center gap-4 lg:block">
+      {/* minmax(0,1fr), not 1fr: without it the "Available for work & projects" pill (nowrap)
+          can force the track wider than its content, overflowing the page at 320-360px. */}
+      <div className="grid grid-cols-[6rem_minmax(0,1fr)] items-center gap-4 lg:block">
         <img
           src={profile.photo}
           alt={`Portrait of ${profile.name}`}
@@ -13,12 +15,12 @@ export function Sidebar() {
           height={400}
           className="aspect-square w-full rounded-xl bg-paper-2 object-cover object-top"
         />
-        <div className="lg:mt-5">
+        <div className="min-w-0 lg:mt-5">
           <p className="text-lg font-semibold tracking-tight">{profile.name}</p>
           <p className="mt-1 text-sm leading-snug text-muted">{profile.tagline}</p>
           {profile.status && (
-            <p className="mt-3 inline-flex items-center gap-2 rounded-full border border-signal/30 bg-signal/[0.07] px-3 py-1 text-[0.8rem] font-medium whitespace-nowrap text-ink">
-              <span className="h-1.5 w-1.5 rounded-full bg-signal" />
+            <p className="mt-3 inline-flex items-center gap-2 rounded-full border border-signal/30 bg-signal/[0.07] px-3 py-1 text-[0.8rem] font-medium text-ink">
+              <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-signal" />
               {profile.status}
             </p>
           )}

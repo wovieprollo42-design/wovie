@@ -22,6 +22,7 @@ export function FeaturedWork() {
               alt={`${site.title} website`}
               width={1440}
               height={900}
+              loading="lazy"
               className="aspect-[16/10] w-full object-cover object-top"
             />
             <Chip>{site.label}</Chip>
@@ -47,6 +48,9 @@ export function FeaturedWork() {
             <img
               src={workflow.image}
               alt="Lead routing workflow in GoHighLevel"
+              width={716}
+              height={992}
+              loading="lazy"
               className="aspect-[16/10] w-full object-cover object-top"
             />
             <Chip>{workflow.label}</Chip>

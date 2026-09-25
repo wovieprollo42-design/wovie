@@ -69,6 +69,7 @@ export function Certifications() {
 
       <dialog
         ref={dialogRef}
+        aria-labelledby="cert-dialog-title"
         onClose={() => setActive(null)}
         onClick={(e) => {
           // A click on the backdrop lands on the dialog element itself.
@@ -85,7 +86,9 @@ export function Certifications() {
             />
             <figcaption className="flex items-center justify-between gap-4 border-t border-line px-5 py-3.5">
               <span>
-                <span className="block font-medium text-ink">{active.title}</span>
+                <span id="cert-dialog-title" className="block font-medium text-ink">
+                  {active.title}
+                </span>
                 <span className="block text-sm text-muted">
                   {active.issuer}
                   {active.date && ` · ${active.date}`}

@@ -7,6 +7,15 @@
  * results that are not documented there.
  */
 
+/**
+ * Public address of the site, without a trailing slash. The canonical link,
+ * og:url, og:image, and JSON-LD in src/routes/__root.tsx are all built from it.
+ * wovie.vercel.app was the first choice, but another Vercel account holds it.
+ * If this changes, also update the static files public/robots.txt and
+ * public/sitemap.xml and the host printed on public/og.png (see docs/seo.md).
+ */
+export const site = { url: 'https://wovie-prollo.vercel.app' }
+
 export const profile = {
   name: 'Wovie Prollo',
   /** Small label above the hero title. */
@@ -31,6 +40,77 @@ export const profile = {
    */
   heroVisual: null as string | null,
   resume: '/resume.pdf',
+}
+
+/**
+ * Voiced intro overlay, shown once per session before the page (src/components/Intro.tsx).
+ * Words are owned by docs/intro-copy.md; a few strings (terminal wording, exact voice-line
+ * text) were adjusted by the frontend engineer to match the real recording and touch/keyboard
+ * use, where they differed from that doc's draft. See docs/intro-copy.md's "Notes for other
+ * agents" and docs/intro-brief.md's "Technical decisions".
+ *
+ * `voiceFile` is the primary voice: a recording of Wovie's own voice at
+ * public/intro-voice.mp3 (11.71s). `lines[].at` are timed to that recording. If the file
+ * fails to load or play(), the intro falls back to the browser's speechSynthesis voice using
+ * `lines[].say`, `voice`, and `rate`. `seconds` is the fallback/estimated duration used before
+ * the real file duration is known (and for the "Enter without sound" timer-driven path).
+ */
+export const intro = {
+  enabled: true,
+  role: 'Certified GoHighLevel Expert · AI Automation Builder',
+  voiceFile: '/intro-voice.mp3',
+  /** speechSynthesis fallback only: preferred voice gender and speaking rate. */
+  voice: 'male' as 'male' | 'female',
+  rate: 0.94,
+  /** Fallback duration (seconds) until the recording's real duration is known. */
+  seconds: 11.7,
+  lines: [
+    {
+      at: 0.2,
+      say: 'I am Wovie Prollo, a certified Go High Level expert.',
+      text: 'I am Wovie Prollo, a certified GoHighLevel expert.',
+      accent: 'certified GoHighLevel expert',
+    },
+    {
+      at: 3.4,
+      say: 'I set up your C.R.M. and automate follow-up.',
+      text: 'I set up your CRM and automate follow-up.',
+      accent: 'automate follow-up',
+    },
+    {
+      at: 6.75,
+      say: 'I build A.I. voice and chat agents.',
+      text: 'I build AI voice and chat agents.',
+      accent: 'AI voice and chat agents',
+    },
+    {
+      at: 9.6,
+      say: "Let's get your leads moving.",
+      text: "Let's get your leads moving.",
+      accent: 'your leads moving',
+    },
+  ],
+  /**
+   * Run log lines. No "$", ">" or "checkmark" prefixes: the design's nodes carry status.
+   * "idle" and "run" are worded to work for touch as well as keyboard (per the brief).
+   */
+  terminal: {
+    boot: 'trigger: new visitor',
+    idle: 'waiting for you to enter',
+    run: 'crm → follow-up → ai agents',
+    done: 'workflow complete',
+  },
+  labels: {
+    enter: 'Enter with sound',
+    quiet: 'Enter without sound',
+    skip: 'Skip intro',
+    mute: 'Mute intro voice',
+    unmute: 'Unmute intro voice',
+    dialog: "Intro to Wovie Prollo's portfolio",
+    replay: 'Replay intro',
+    /** Shown once, decoratively, when the intro finishes (docs/intro-brief.md, 2026-09-25). */
+    welcome: 'Welcome!',
+  },
 }
 
 export const links = {

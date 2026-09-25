@@ -1,3 +1,4 @@
+import { Fragment } from 'react'
 import { profile, tools } from '@/data/site'
 import { HeroBackdrop } from './Motif'
 import { ArrowIcon } from './Icons'
@@ -24,17 +25,22 @@ export function Hero() {
         <div className="mt-2 grid gap-10 xl:grid-cols-[1.2fr_1fr] xl:items-center">
           <div className="@container min-w-0">
 
-            {/* One span per line so the breaks are deliberate; the last line is the accent. */}
+            {/* One span per line so the breaks are deliberate; the last line is the accent.
+                A space text node sits between spans so the rendered text doesn't run
+                together (e.g. for copy/paste or assistive tech) even though each line is
+                also visually a block. */}
             {/* Exactly one line per entry: lines never wrap, and the size is tied to the
                 text column's width (cqi) so the widest line always fits. */}
             <h1 className="mt-6 font-heading text-[clamp(1.75rem,12cqi,4rem)] leading-[1.02] tracking-tight">
               {lines.map((line, i) => (
-                <span
-                  key={line}
-                  className={i === last ? 'block italic whitespace-nowrap text-signal-deep' : 'block whitespace-nowrap'}
-                >
-                  {line}
-                </span>
+                <Fragment key={line}>
+                  <span
+                    className={i === last ? 'block italic whitespace-nowrap text-signal-deep' : 'block whitespace-nowrap'}
+                  >
+                    {line}
+                  </span>
+                  {i < last ? ' ' : null}
+                </Fragment>
               ))}
             </h1>
 
