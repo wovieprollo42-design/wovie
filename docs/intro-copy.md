@@ -99,22 +99,22 @@ export const intro = {
       accent: 'certified GoHighLevel expert',
     },
     {
-      at: 4.2,
+      at: 3.7,
       say: 'I can set up your C R M, and automate your follow-up.',
       text: 'I can set up your CRM and automate your follow-up.',
       accent: 'automate your follow-up',
     },
     {
-      at: 8.2,
+      at: 7.2,
       say: 'I also build A I voice and chat agents for your business.',
       text: 'I also build AI voice and chat agents for your business.',
       accent: 'AI voice and chat agents',
     },
     {
-      at: 11.8,
-      say: "Let's work together to get your leads moving.",
-      text: "Let's work together to get your leads moving.",
-      accent: 'get your leads moving',
+      at: 10.4,
+      say: "Let's get started!",
+      text: "Let's Get Started!",
+      accent: 'Get Started!',
     },
   ],
   terminal: {
