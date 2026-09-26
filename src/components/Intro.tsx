@@ -236,6 +236,18 @@ function mountIntro(root: HTMLDivElement, isReplay: boolean, onDone: () => void)
   /** The progress bar/pct never regress, even when re-syncing after an unseekable unmute
    *  (fix round item 7). */
   let maxRatio = 0
+  /**
+   * Browser-voice progress. The bar follows the speech itself (utterance start, word
+   * boundaries, end) so it reaches 100% at the moment the last word ends, on any device.
+   * Characters of `say` text are the unit: finished lines plus the current word boundary.
+   */
+  const totalSayChars = intro.lines.reduce((n, l) => n + l.say.length, 0)
+  let speechStartedAt: number | null = null
+  let speechDone = false
+  let speechChars = 0
+  let speechCharsBase = 0
+  let speechCurrentLen = 0
+  let lastSpeechEventAt = 0
   let typingTimer = 0
   const timers: number[] = []
   let doneLines: { cls: string; text: string }[] = []
@@ -423,7 +435,34 @@ function mountIntro(root: HTMLDivElement, isReplay: boolean, onDone: () => void)
       utter.rate = intro.rate
       utter.pitch = pitchFor(voice)
       utter.volume = 1
-      utter.onstart = () => showCaption(i)
+      const before = intro.lines.slice(0, i).reduce((n, l) => n + l.say.length, 0)
+      const last = i === intro.lines.length - 1
+      utter.onstart = () => {
+        showCaption(i)
+        const now = performance.now()
+        if (speechStartedAt === null) speechStartedAt = now
+        speechCharsBase = before
+        speechChars = Math.max(speechChars, before)
+        speechCurrentLen = line.say.length
+        lastSpeechEventAt = now
+      }
+      // Word boundaries (Chrome/Edge with system voices; other engines only send start/end).
+      utter.onboundary = (e) => {
+        speechChars = Math.max(speechChars, before + (e.charIndex || 0))
+        lastSpeechEventAt = performance.now()
+      }
+      const lineDone = () => {
+        speechCharsBase = before + line.say.length
+        speechChars = Math.max(speechChars, speechCharsBase)
+        lastSpeechEventAt = performance.now()
+        if (last) speechDone = true
+      }
+      utter.onend = lineDone
+      utter.onerror = (e) => {
+        // A cancel (skip, mute) is not a finished line; any other failure counts as done so
+        // the bar can still move on to the next line.
+        if (e.error !== 'interrupted' && e.error !== 'canceled') lineDone()
+      }
       synth.speak(utter)
     })
     updateAriaLive()
@@ -539,7 +578,29 @@ function mountIntro(root: HTMLDivElement, isReplay: boolean, onDone: () => void)
     // Silent/timer mode ("Enter without sound", the stalled-file fallback, or speechSynthesis):
     // paced from the click.
     const elapsed = (performance.now() - startedAt) / 1000
-    const ratio = duration > 0 ? elapsed / duration : 0
+    const now = performance.now()
+    // Browser voice: once the first line has started, the bar follows the speech, so 100%
+    // lands exactly when the last word ends. Between speech events it advances smoothly at the
+    // measured speaking speed, capped at the end of the current line and just under 100%.
+    const speechStart = speechStartedAt
+    const speechDriving = synthUsed && !muted && speechStart !== null
+    let ratio: number
+    if (speechDriving && speechStart !== null) {
+      if (speechDone) {
+        ratio = 1
+      } else {
+        const spokenFor = (now - speechStart) / 1000
+        const speed =
+          speechChars > 0 && spokenFor > 0.5
+            ? speechChars / spokenFor
+            : totalSayChars / Math.max(1, intro.seconds)
+        const sinceEvent = (now - lastSpeechEventAt) / 1000
+        const est = Math.min(speechChars + speed * sinceEvent, speechCharsBase + speechCurrentLen)
+        ratio = Math.min(0.99, totalSayChars > 0 ? est / totalSayChars : 0)
+      }
+    } else {
+      ratio = duration > 0 ? elapsed / duration : 0
+    }
     setProgress(ratio)
     // With the browser voice, each utterance's onstart shows its caption. The timers only back
     // that up: they stay out of the way while the voice is speaking, and trail it by 1 s
@@ -557,7 +618,11 @@ function mountIntro(root: HTMLDivElement, isReplay: boolean, onDone: () => void)
       finish()
       return
     }
-    if (elapsed > intro.seconds + 4) {
+    // Safety caps: a slow device voice may legitimately take longer than `seconds`, so the
+    // speech-driven path gets more room, but a voice that stops sending events is a stall.
+    const cap = speechDriving ? Math.max(intro.seconds * 2, 20) + 4 : intro.seconds + 4
+    const stalled = speechDriving && !speechDone && (now - lastSpeechEventAt) / 1000 > 8
+    if (elapsed > cap || stalled) {
       finish()
       return
     }
