@@ -246,8 +246,10 @@ function mountIntro(root: HTMLDivElement, isReplay: boolean, onDone: () => void)
   let speechDone = false
   let speechChars = 0
   let speechCharsBase = 0
-  let speechCurrentLen = 0
   let lastSpeechEventAt = 0
+  /** The bar's currently shown ratio and the last tick time, for smooth motion. */
+  let displayed = 0
+  let lastTickAt = 0
   let typingTimer = 0
   const timers: number[] = []
   let doneLines: { cls: string; text: string }[] = []
@@ -443,7 +445,6 @@ function mountIntro(root: HTMLDivElement, isReplay: boolean, onDone: () => void)
         if (speechStartedAt === null) speechStartedAt = now
         speechCharsBase = before
         speechChars = Math.max(speechChars, before)
-        speechCurrentLen = line.say.length
         lastSpeechEventAt = now
       }
       // Word boundaries (Chrome/Edge with system voices; other engines only send start/end).
@@ -584,23 +585,33 @@ function mountIntro(root: HTMLDivElement, isReplay: boolean, onDone: () => void)
     // measured speaking speed, capped at the end of the current line and just under 100%.
     const speechStart = speechStartedAt
     const speechDriving = synthUsed && !muted && speechStart !== null
+    const dt = lastTickAt ? Math.min(0.1, (now - lastTickAt) / 1000) : 0
+    lastTickAt = now
     let ratio: number
     if (speechDriving && speechStart !== null) {
       if (speechDone) {
         ratio = 1
       } else {
+        // Where the voice is, in characters, projected forward at the measured speaking speed.
         const spokenFor = (now - speechStart) / 1000
         const speed =
           speechChars > 0 && spokenFor > 0.5
             ? speechChars / spokenFor
             : totalSayChars / Math.max(1, intro.seconds)
         const sinceEvent = (now - lastSpeechEventAt) / 1000
-        const est = Math.min(speechChars + speed * sinceEvent, speechCharsBase + speechCurrentLen)
-        ratio = Math.min(0.99, totalSayChars > 0 ? est / totalSayChars : 0)
+        const target = Math.min(0.99, (speechChars + speed * sinceEvent) / Math.max(1, totalSayChars))
+        // Smooth motion: never stop while the voice is running, never jump. Move at the
+        // speaking speed, up to 2.5x that to catch up when behind, and at least a third of it
+        // when the speech position turns out to be behind the bar.
+        const perFrame = (speed / Math.max(1, totalSayChars)) * dt
+        const diff = target - displayed
+        const step = diff > 0 ? Math.min(diff, perFrame * 2.5) : 0
+        ratio = Math.min(0.99, displayed + Math.max(step, perFrame * 0.35))
       }
     } else {
       ratio = duration > 0 ? elapsed / duration : 0
     }
+    displayed = Math.max(displayed, ratio)
     setProgress(ratio)
     // With the browser voice, each utterance's onstart shows its caption. The timers only back
     // that up: they stay out of the way while the voice is speaking, and trail it by 1 s

@@ -71,7 +71,7 @@ export const intro = {
   voice: 'male' as 'male' | 'female',
   rate: 1.3,
   /** Length of the progress bar in seconds (about how long the voice takes to read the lines). */
-  seconds: 13,
+  seconds: 25.5,
   /**
    * The lines are worded as an offer of services. `say` is what the voice speaks (spelled
    * for pronunciation); `text` is the caption. `at` is each caption's fallback time.
@@ -79,27 +79,33 @@ export const intro = {
   lines: [
     {
       at: 0.2,
-      say: "Hi, I'm Wovie Prollo, a certified Go High Level expert.",
-      text: "Hi, I'm Wovie Prollo, a certified GoHighLevel expert.",
-      accent: 'certified GoHighLevel expert',
+      say: "Hi, I'm Wovie Prollo, a certified Go High Level expert and A I automation builder.",
+      text: "Hi, I'm Wovie Prollo, a Certified GoHighLevel Expert and AI Automation Builder.",
+      accent: 'AI Automation Builder',
     },
     {
-      at: 3.7,
-      say: 'I can set up your C R M, and automate your follow-up.',
-      text: 'I can set up your CRM and automate your follow-up.',
-      accent: 'automate your follow-up',
+      at: 6.0,
+      say: 'I help businesses simplify their operations',
+      text: 'I help businesses simplify their operations',
+      accent: 'simplify their operations',
     },
     {
-      at: 7.2,
-      say: 'I also build A I voice and chat agents for your business.',
-      text: 'I also build AI voice and chat agents for your business.',
-      accent: 'AI voice and chat agents',
+      at: 9.1,
+      say: 'by building smart C R M systems, automated workflows, and A I powered solutions.',
+      text: 'by building smart CRM systems, automated workflows, and AI-powered solutions.',
+      accent: 'AI-powered solutions',
     },
     {
-      at: 10.4,
-      say: "Let's get started!",
-      text: "Let's Get Started!",
-      accent: 'Get Started!',
+      at: 14.6,
+      say: 'From lead capture and follow-ups, to appointment booking and A I agents,',
+      text: 'From lead capture and follow-ups to appointment booking and AI agents,',
+      accent: 'AI agents',
+    },
+    {
+      at: 19.4,
+      say: 'I build systems that save time, reduce manual work, and help businesses run more efficiently.',
+      text: 'I build systems that save time, reduce manual work, and help businesses run more efficiently.',
+      accent: 'run more efficiently',
     },
   ],
   /**
