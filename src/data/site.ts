@@ -14,7 +14,7 @@
  * If this changes, also update the static files public/robots.txt and
  * public/sitemap.xml and the host printed on public/og.png (see docs/seo.md).
  */
-export const site = { url: 'https://wovie-prollo.vercel.app' }
+export const site = { url: 'https://wovie-certified.vercel.app' }
 
 export const profile = {
   name: 'Wovie Prollo',

@@ -30,11 +30,11 @@ automation specialist, usually after seeing Wovie's name on Upwork, LinkedIn, or
 The site address lives in `src/data/site.ts`:
 
 ```ts
-export const site = { url: 'https://wovie-prollo.vercel.app' }
+export const site = { url: 'https://wovie-certified.vercel.app' }
 ```
 
 Canonical, `og:url`, `og:image`, `twitter:image`, and the JSON-LD URLs are all built from it. If
-the deploy lands on the fallback `https://wovie-prollo.vercel.app` (or a custom domain), change
+the deploy lands on the fallback `https://wovie-certified.vercel.app` (or a custom domain), change
 this value and **also edit these static files by hand**, since they cannot read the constant:
 
 1. `public/robots.txt`: the `Sitemap:` line.
@@ -187,11 +187,11 @@ describes the image, so update it if the role line on the card changes.
 
     <!-- Footer flow line: url label, nodes, accent node wired to the photo. -->
     <g fill="none" stroke-width="1">
-      <line x1="376" y1="538" x2="946" y2="538" stroke="#ffffff" stroke-opacity="0.16" />
+      <line x1="404" y1="538" x2="946" y2="538" stroke="#ffffff" stroke-opacity="0.16" />
       <line x1="962" y1="461" x2="962" y2="530" stroke="#ff5a1f" stroke-opacity="0.9" />
       <line x1="978" y1="538" x2="1112" y2="538" stroke="#ffffff" stroke-opacity="0.16" />
     </g>
-    <circle cx="376" cy="538" r="4" fill="#141a26" stroke="#ffffff" stroke-opacity="0.4" />
+    <circle cx="404" cy="538" r="4" fill="#141a26" stroke="#ffffff" stroke-opacity="0.4" />
     <circle cx="620" cy="538" r="4" fill="#141a26" stroke="#ffffff" stroke-opacity="0.4" />
     <circle cx="962" cy="538" r="11" fill="#ff5a1f" fill-opacity="0.18" />
     <circle cx="962" cy="538" r="5" fill="#ff5a1f" />
@@ -208,7 +208,7 @@ describes the image, so update it if the role line on the card changes.
 
   <div class="photo"><img src="profile.jpg" alt=""></div>
 
-  <p class="url">wovie-prollo.vercel.app</p>
+  <p class="url">wovie-certified.vercel.app</p>
 </div>
 </body>
 </html>
