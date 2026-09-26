@@ -49,45 +49,53 @@ export const profile = {
  * use, where they differed from that doc's draft. See docs/intro-copy.md's "Notes for other
  * agents" and docs/intro-brief.md's "Technical decisions".
  *
- * `voiceFile` is the primary voice: a recording of Wovie's own voice at
- * public/intro-voice.mp3 (11.71s). `lines[].at` are timed to that recording. If the file
- * fails to load or play(), the intro falls back to the browser's speechSynthesis voice using
- * `lines[].say`, `voice`, and `rate`. `seconds` is the fallback/estimated duration used before
- * the real file duration is known (and for the "Enter without sound" timer-driven path).
+ * The voice is the browser's own speechSynthesis (like the reference intro), reading
+ * `lines[].say` with the preferred `voice` gender and `rate`; each caption appears when its
+ * line starts speaking. `lines[].at` only drive the captions on the "Enter without sound"
+ * path (and as a backup if the voice never starts), spaced over `seconds`. To use a recording
+ * instead, set `voiceFile` to a file in /public and time `at` to it.
  */
 export const intro = {
   enabled: true,
   role: 'Certified GoHighLevel Expert · AI Automation Builder',
-  voiceFile: '/intro-voice.mp3',
-  /** speechSynthesis fallback only: preferred voice gender and speaking rate. */
+  /**
+   * Empty: the browser's own speech voice reads the lines (like the reference intro at
+   * israelgonzaga.vercel.app). Set a path such as '/intro-voice.mp3' to play a recording instead.
+   */
+  voiceFile: '',
+  /** Browser voice: preferred gender and speaking rate (the reference uses male, 0.94). */
   voice: 'male' as 'male' | 'female',
   rate: 0.94,
-  /** Fallback duration (seconds) until the recording's real duration is known. */
-  seconds: 11.7,
+  /** Length of the progress bar in seconds (about how long the voice takes to read the lines). */
+  seconds: 15,
+  /**
+   * The lines are worded as an offer of services. `say` is what the voice speaks (spelled
+   * for pronunciation); `text` is the caption. `at` is each caption's fallback time.
+   */
   lines: [
     {
       at: 0.2,
-      say: 'I am Wovie Prollo, a certified Go High Level expert.',
-      text: 'I am Wovie Prollo, a certified GoHighLevel expert.',
+      say: "Hi, I'm Wovie Prollo, a certified Go High Level expert.",
+      text: "Hi, I'm Wovie Prollo, a certified GoHighLevel expert.",
       accent: 'certified GoHighLevel expert',
     },
     {
-      at: 3.4,
-      say: 'I set up your C.R.M. and automate follow-up.',
-      text: 'I set up your CRM and automate follow-up.',
-      accent: 'automate follow-up',
+      at: 4.2,
+      say: 'I can set up your C R M, and automate your follow-up.',
+      text: 'I can set up your CRM and automate your follow-up.',
+      accent: 'automate your follow-up',
     },
     {
-      at: 6.75,
-      say: 'I build A.I. voice and chat agents.',
-      text: 'I build AI voice and chat agents.',
+      at: 8.2,
+      say: 'I also build A I voice and chat agents for your business.',
+      text: 'I also build AI voice and chat agents for your business.',
       accent: 'AI voice and chat agents',
     },
     {
-      at: 9.6,
-      say: "Let's get your leads moving.",
-      text: "Let's get your leads moving.",
-      accent: 'your leads moving',
+      at: 11.8,
+      say: "Let's work together to get your leads moving.",
+      text: "Let's work together to get your leads moving.",
+      accent: 'get your leads moving',
     },
   ],
   /**

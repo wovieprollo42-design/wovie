@@ -77,13 +77,16 @@ Same wording as the hero title, so the intro and the first screen match.
 
 ## 5. Ready to paste
 
-This matches `src/data/site.ts` (the source of truth: its `at` values are timed to the real
-recording at `public/intro-voice.mp3`, and its wording matches what Wovie actually says on it).
-Where this changed from the earlier draft above: line 1 says "I am" (not "I'm," what he recorded);
-`at` values are 0.2 / 3.4 / 6.75 / 9.6, matching the recording's real timing; the terminal lines
-drop the `$` / `>` / `✓` prefixes (the design's nodes carry that status instead) and the idle/run
-wording works for touch as well as keyboard; and `labels` has a `welcome` field for the
-finish-celebration "Welcome!" text (docs/intro-brief.md, 2026-09-25).
+This matches `src/data/site.ts` (the source of truth). On 2026-09-25 the owner asked for the
+lines to read as an offer of his services and for the voice to be like the reference intro
+(israelgonzaga.vercel.app), so the intro now uses the browser's own speech voice (male
+preference, rate 0.94, pitch 0.86) with no audio file; `say` is spelled for pronunciation and
+each caption appears when its line starts speaking. The owner's own recording is kept at
+`docs/intro-voice-original.mp3` in case a recorded voice is wanted again. `at` values pace
+the captions on the "Enter without sound" path (bar length 15 s). The terminal lines drop the
+`$` / `>` / `✓` prefixes (the design's nodes carry that status instead), the idle/run wording
+works for touch as well as keyboard, and `labels` has a `welcome` field for the
+finish-celebration "Welcome!" text (docs/intro-brief.md).
 
 ```ts
 export const intro = {
@@ -91,27 +94,27 @@ export const intro = {
   lines: [
     {
       at: 0.2,
-      say: 'I am Wovie Prollo, a certified Go High Level expert.',
-      text: 'I am Wovie Prollo, a certified GoHighLevel expert.',
+      say: "Hi, I'm Wovie Prollo, a certified Go High Level expert.",
+      text: "Hi, I'm Wovie Prollo, a certified GoHighLevel expert.",
       accent: 'certified GoHighLevel expert',
     },
     {
-      at: 3.4,
-      say: 'I set up your C.R.M. and automate follow-up.',
-      text: 'I set up your CRM and automate follow-up.',
-      accent: 'automate follow-up',
+      at: 4.2,
+      say: 'I can set up your C R M, and automate your follow-up.',
+      text: 'I can set up your CRM and automate your follow-up.',
+      accent: 'automate your follow-up',
     },
     {
-      at: 6.75,
-      say: 'I build A.I. voice and chat agents.',
-      text: 'I build AI voice and chat agents.',
+      at: 8.2,
+      say: 'I also build A I voice and chat agents for your business.',
+      text: 'I also build AI voice and chat agents for your business.',
       accent: 'AI voice and chat agents',
     },
     {
-      at: 9.6,
-      say: "Let's get your leads moving.",
-      text: "Let's get your leads moving.",
-      accent: 'your leads moving',
+      at: 11.8,
+      say: "Let's work together to get your leads moving.",
+      text: "Let's work together to get your leads moving.",
+      accent: 'get your leads moving',
     },
   ],
   terminal: {

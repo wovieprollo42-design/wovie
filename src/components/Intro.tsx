@@ -103,19 +103,37 @@ function lineHtml(cls: string, text: string, caret: boolean) {
   return `<div class="${className}"><span class="intro-term-text">${escapeHtml(text)}${caretHtml}</span></div>`
 }
 
-/** speechSynthesis fallback voice preference (docs/intro-brief.md: male, natural/online first). */
+/**
+ * Browser voice preference, same order as the reference intro (israelgonzaga.vercel.app):
+ * natural/online voices first, then the common built-in ones. The browser voice is the
+ * primary voice when `intro.voiceFile` is empty.
+ */
 const PREF_MALE = [
-  /(Andrew|Guy|Brian|Christopher).*(Online|Natural)/i,
+  /(Andrew|Guy|Davis|Brian|Christopher|Eric|Roger|Steffan).*(Natural|Online)/i,
+  /(Ryan|Thomas|William|Liam|Connor).*(Natural|Online)/i,
   /Google UK English Male/i,
-  /\b(Daniel|Alex|Aaron|Oliver)\b/i,
-  /\b(David|Mark)\b/i,
+  /\b(Daniel|Alex|Fred|Aaron|Arthur|Rishi|Gordon|Oliver)\b/i,
+  /\b(David|Mark|James|George|Richard|Male)\b/i,
 ]
 const PREF_FEMALE = [
-  /(Aria|Jenny|Ava|Michelle|Sonia|Libby).*(Online|Natural)/i,
+  /(Aria|Jenny|Ava|Emma|Michelle|Sonia|Libby).*(Natural|Online)/i,
+  /(Natural|Neural)/i,
+  /Google US English/i,
   /Google UK English Female/i,
   /\b(Samantha|Karen|Moira|Tessa|Serena)\b/i,
-  /\bZira\b/i,
+  /\b(Zira|Female)\b/i,
 ]
+
+function isMaleVoice(v: SpeechSynthesisVoice | null) {
+  return !!v && PREF_MALE.some((re) => re.test(v.name))
+}
+
+/** Reference intro's pitch rule: deep and steady for a male voice; if the browser only has
+ *  female voices, pitch one down hard; a preferred female voice sits just above neutral. */
+function pitchFor(v: SpeechSynthesisVoice | null) {
+  if (intro.voice === 'male') return isMaleVoice(v) ? 0.86 : 0.62
+  return 1.02
+}
 
 function pickVoice(synth: SpeechSynthesis): SpeechSynthesisVoice | null {
   let voices: SpeechSynthesisVoice[] = []
@@ -403,6 +421,7 @@ function mountIntro(root: HTMLDivElement, isReplay: boolean, onDone: () => void)
       if (voice) utter.voice = voice
       utter.lang = voice?.lang || 'en-US'
       utter.rate = intro.rate
+      utter.pitch = pitchFor(voice)
       utter.volume = 1
       utter.onstart = () => showCaption(i)
       synth.speak(utter)
@@ -522,8 +541,15 @@ function mountIntro(root: HTMLDivElement, isReplay: boolean, onDone: () => void)
     const elapsed = (performance.now() - startedAt) / 1000
     const ratio = duration > 0 ? elapsed / duration : 0
     setProgress(ratio)
-    for (let i = 0; i < intro.lines.length; i += 1) {
-      if (elapsed >= intro.lines[i].at) showCaption(i)
+    // With the browser voice, each utterance's onstart shows its caption. The timers only back
+    // that up: they stay out of the way while the voice is speaking, and trail it by 1 s
+    // otherwise, so a caption never runs ahead of the words (the reference does the same).
+    const voiceDriving = synthUsed && !muted && !!synth && synth.speaking
+    if (!voiceDriving) {
+      const lead = synthUsed && !muted ? 1 : 0
+      for (let i = 0; i < intro.lines.length; i += 1) {
+        if (elapsed >= intro.lines[i].at + lead) showCaption(i)
+      }
     }
     const synthBusy = synthUsed && synth ? synth.speaking : false
     const voiceBusy = !muted && synthBusy

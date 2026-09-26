@@ -19,12 +19,14 @@ or prefers reduced motion.
 
 - **Config**: `intro` in `src/data/site.ts`: the voice lines and captions, the run-log and
   button copy (including `labels.welcome`, the text of the finish-celebration "Welcome!"),
-  `voiceFile`, the `speechSynthesis` fallback voice/rate, the fallback duration (`seconds`), and
-  `enabled`.
-- **Replace the voice recording**: overwrite `public/intro-voice.mp3` with a new recording, then
-  update `intro.seconds` to its real length and each `intro.lines[].at` to when that line starts
-  in the new file (in seconds). If the file fails to load, the intro automatically falls back to
-  the browser's built-in voice using `intro.lines[].say`.
+  the browser voice preference (`voice`, `rate`), the progress-bar length (`seconds`),
+  `voiceFile`, and `enabled`.
+- **The voice**: the browser's built-in speech voice reads `intro.lines[].say` (male, slightly
+  slow and low, like the reference intro), so it sounds a little different on each device.
+  To play a recording instead, put the file in `public/` and set `intro.voiceFile` to its path
+  (for example `/intro-voice.mp3`), set `intro.seconds` to its length, and time each
+  `intro.lines[].at` to when that line starts in the file. If a recording fails to load, the
+  intro falls back to the browser voice.
 - **Turn it off**: set `intro.enabled` to `false` in `src/data/site.ts`. This also hides the
   "Replay intro" footer button and stops the boot script from ever showing the overlay.
 - **Replay it**: click "Replay intro" in the footer at any time (it works even with reduced
