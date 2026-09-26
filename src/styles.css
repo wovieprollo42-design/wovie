@@ -1054,3 +1054,54 @@ html[data-theme='dark'] .intro-welcome span {
     100% { opacity: 0; transform: none; }
   }
 }
+
+/* ---- Custom cursor (mouse devices): orange arrow + "Hire Me" pill (CursorLabel.tsx) ---- */
+@media (pointer: fine) {
+  html,
+  body {
+    cursor:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cpath d='M3 2v21l5.4-5 3.8 8 3.2-1.5-3.7-7.6 7.5-.4z' fill='%23ff5a1f' stroke='%23ffffff' stroke-width='1.6' stroke-linejoin='round'/%3E%3C/svg%3E")
+        3 2,
+      auto;
+  }
+}
+.cursor-label {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 99999;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.32rem 0.9rem;
+  border-radius: 999px;
+  background: var(--color-signal);
+  color: #141a26;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 8px 20px -8px rgb(255 90 31 / 0.6);
+  transform-origin: 0 0;
+  transform: translate(20px, 8px) scale(0.7);
+  opacity: 0;
+  transition:
+    opacity 0.18s,
+    transform 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.cursor-label.is-visible {
+  opacity: 1;
+  transform: translate(20px, 8px) scale(1);
+}
+@media (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .cursor-label {
+    transition: opacity 0.15s;
+    transform: translate(20px, 8px) !important;
+  }
+}
+@media (pointer: coarse) {
+  .cursor-label {
+    display: none;
+  }
+}

@@ -1,6 +1,7 @@
 import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
 import { INTRO_BOOT_SCRIPT } from '@/components/Intro'
 import { NotFoundPage } from '@/components/NotFoundPage'
+import { CursorLabel } from '@/components/CursorLabel'
 import { links, profile, services, site, tools } from '@/data/site'
 
 import '../styles.css'
@@ -130,6 +131,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         {children}
+        <CursorLabel />
         <Scripts />
       </body>
     </html>

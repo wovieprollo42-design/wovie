@@ -145,6 +145,9 @@ export const booking = {
 }
 
 
+/** Pill that follows the mouse pointer (CursorLabel.tsx). Set text to '' to turn it off. */
+export const cursorLabel = { text: 'Hire Me' }
+
 export const navLinks = [
   { label: 'Work', href: '#work' },
   { label: 'Systems', href: '#systems' },
