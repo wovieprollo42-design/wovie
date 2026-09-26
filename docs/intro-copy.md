@@ -124,7 +124,7 @@ export const intro = {
     done: 'workflow complete',
   },
   labels: {
-    enter: 'Enter with sound',
+    enter: 'Please Enter',
     quiet: 'Enter without sound',
     skip: 'Skip intro',
     mute: 'Mute intro voice',
